@@ -1,8 +1,48 @@
 <html>
 	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 		<script src="prodec.js"></script>
 		<script>
-			BR = '----------------------------';
+			function setDec(data) {
+				var dec = document.getElementById("dec");
+				dec && (dec.value = data);
+				doDec = true;
+			}
+
+			function setTest(data) {
+				var test = document.getElementById("test");
+				test && (test.value = data);
+			}
+
+			function clearOutput() {
+				var output = document.getElementById("output");
+				output && (output.value = '');
+			}
+
+			function clean() {
+				setDec('');
+				setTest('');
+				clearOutput();
+			}
+
+			function load(nr) {
+
+				nr = nr || 1;
+				jQuery.ajax({ 
+					url     : "test-dec-" + nr + ".js", 
+					success : setDec,
+					error   : clean
+				});
+
+				jQuery.ajax({ 
+					url     : "test-test-" + nr +".js", 
+					success : setTest,
+					error   : clean
+				});
+
+				clean();
+			}
+
 			doDec = true;
 
 			function debug(str) {
@@ -19,87 +59,42 @@
 			}
 
 			function run() {
+				clearOutput();
+
 				if (doDec) {
 					doDec = false;
 					var dec = document.getElementById("dec");
-					exec(dec.value);
+					dec && exec(dec.value);
 				}
 
-				var output = document.getElementById("output");
-				output.value = '';
 
 				var test = document.getElementById("test");
-				exec(test.value);		
+				test && exec(test.value);		
 			}
 		</script>
 	</head>
 
-	<body>
-	<div style="float:left">
-		Declaration : <br/>
-		<textarea onchange="decChanged()" id="dec" cols="40" rows="30">Super = Declare({
-    _value    : 'initial',
-    _setValue : function() {
-        debug('Super._setValue');
-        _value = 'done';
-    },
-    setValue  : function(val) {
-        debug('Super.setValue');
-        if (val == 'test') {
-            _setValue( val );
-        }
-    },
-    getValue : function(){
-        debug('Super.getValue');
-        return _value;
-    }
-});
+	<body onload="load(2)">
+		<div style="float:left">
+			Declaration : <br/>
+			<textarea onchange="decChanged()" id="dec" cols="40" rows="30">Loading...</textarea>
+		</div>
 
-Sub = Declare( Super, {
-    _setValue : function(){
-        debug('Sub._setValue');
-        _value = 'not-done';
-    },
-    getValue : function() {
-        debug('Sub.getValue');
-        return $getValue();    
-    }
-});</textarea>
+		<div style="float:left">
+			Test : <br/>
+			<textarea id="test" cols="40" rows="30">Loading...</textarea>
+		</div>
 
-	</div>
-	<div style="float:left">
-	Test : <br/>
-	<textarea id="test" cols="40" rows="30"> var child = new Sub();
+		<div style="float:left">
+			Output : <br/>
+			<textarea id="output" cols="40" rows="30"></textarea>
+		</div>
 
-// First public methods
-// result should be "setted"
-
-var old = child.getValue();
-debug('Old Value:' +  old);
-debug(BR);
-
-child.setValue('test');
-debug(BR);
-
-var newv = child.getValue();
-debug('New Value:' + newv );
-debug(BR);
-
-// Testing protected method from outside
-// Method should throw error
-try {
-    child._setValue( 'never' );
-} catch(e) {
-    debug("ERROR: " + e.message);
-} </textarea>
-	</div>
-	<div style="float:left">
-		Output : <br/>
-		<textarea id="output" cols="40" rows="30"></textarea>
-	</div>
-	<div style="clear:both">
-		This will run tests. check firebug
-		<button onclick="run()">Run</button>
-	</div>
+		<div style="clear:both">
+			This will run test.
+			<button onclick="run()">Run</button>
+			<button onclick="load(1)">Declare based</button>
+			<button onclick="load(2)">Prototype based</button>
+		</div>
 	</body>
 </html>
