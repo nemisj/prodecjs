@@ -51,7 +51,13 @@
 				}
 			}
 
-			var $super = s.__super__ ? s.__super__.prototype : null;
+            var $super;
+
+            if ('__proto__' in proto) {
+                $super = proto.__proto__;
+            } else {
+                $super = s.__super__ ? s.__super__.prototype : null;
+            }
 
 			if ($super) {
 				for(var i in $super) {
@@ -97,20 +103,30 @@
 			return getConstructor();
         }
 
-        if (parent) {
-            // building inheritance chain
-            parentProto = parent.prototype;
+		var constructor = getConstructor();
 
-            for (var i in parentProto) {
-                if (!(i in proto)) {
-                    proto[i] = parentProto[i];
+        // lets' support __proto__ facility 
+        if (parent) {
+            if ("__proto__" in constructor.prototype) {
+                // we can do simple __proto__
+                // browser will do stuff for us
+                constructor.prototype.__proto__ = parent.prototype;
+            } else {
+                // IE case, maybe OPERA?
+                // building own prototype
+                parentProto = parent.prototype;
+
+                for (var i in parentProto) {
+                    if (!(i in proto)) {
+                        proto[i] = parentProto[i];
+                    }
                 }
+
+                constructor.__super__ = parent;
+                constructor.prototype = proto;
             }
         }
 
-		var constructor = getConstructor();
-		constructor.__super__ = parent;
-        constructor.prototype = proto;
 		constructor.prototype.constructor = constructor;
 
         return constructor;
