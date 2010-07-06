@@ -8,7 +8,7 @@
 
 	var getConstructor = function(){
 
-		var s = function constr() {
+		var s = function() {
 
 			// in  IE constr != s
 			// using s
@@ -105,6 +105,9 @@
 
 		var constructor = getConstructor();
 
+		constructor.prototype.constructor = constructor;
+        constructor.prototype = proto;
+
         // lets' support __proto__ facility 
         if (parent) {
             if ("__proto__" in constructor.prototype) {
@@ -123,11 +126,8 @@
                 }
 
                 constructor.__super__ = parent;
-                constructor.prototype = proto;
             }
         }
-
-		constructor.prototype.constructor = constructor;
 
         return constructor;
     }
