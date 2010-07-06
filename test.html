@@ -36,7 +36,17 @@
 
 			function load(nr) {
 
-				nr = nr || 1;
+				if (!nr) {
+					var match = document.cookie.match(/testnr\=.+?(;|$)/)
+				    if (match) {
+                        nr = match[0].replace(';','').replace('testnr=','');
+                    } else {
+					    nr = 3;	
+				    }
+				}
+
+				document.cookie = ("testnr=" + nr);
+
 				jQuery.ajax({ 
 					url     : "test-dec-" + nr + ".js", 
                     dataType : "text",
@@ -77,7 +87,7 @@
 
             $(function(){
 
-                load(2);
+                load();
 
                 $("textarea").keypress(function(e) {
                     if (e.keyCode === 9) {
@@ -90,6 +100,15 @@
 
 	<body>
 		<div style="width:100%">
+				<div>
+				    Choose declaration : 
+					<button onclick="load( 1 )">Decleartive</button>
+					<button onclick="load( 2 )">Prototype</button>
+					<button onclick="load( 3 )">Simple</button>
+				</div>
+				<div>
+					<button onclick="run()">Run</button>
+				</div>
 				<div style="float:left;width:32%;">
 					Declaration : <br/>
 					<textarea onchange="decChanged()" rows="30" id="dec" style="width:95%">
@@ -107,12 +126,7 @@
 					<textarea id="output" rows="30" style="width:95%"></textarea>
 				</div>
 
-				<div style="clear:both">
-					This will run test.
-					<button onclick="run()">Run</button>
-					<button onclick="load(1)">Declare based</button>
-					<button onclick="load(2)">Prototype based</button>
-				</div>
+				<div style="clear:both"></div>
 		</div>
 	</body>
 </html>

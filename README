@@ -26,7 +26,7 @@ Prodecjs can be used as the constructor replacer for creating protected scope in
 
 ## Inheritance
 
-Inherited functions can be called by using $ in front of the function. All inherited functions are making deal out of the protected scope. As example : 
+Inherited functions can be called by using $super object and the function name. All inherited functions are making deal out of the protected scope. As example : 
 
 	var A = Declare({
 		public     : function() {},
@@ -36,10 +36,10 @@ Inherited functions can be called by using $ in front of the function. All inher
 	var B = Declare(A, {
 		test : function() {
 			// calling public inherited function
-			$public();
+			$super.public();
 
 			// calling protected inherited function
-			$_protected();
+			$super._protected();
 		}
 	});
 
