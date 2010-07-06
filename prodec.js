@@ -21,11 +21,17 @@
 			// prototype of the constructor will be empty
 			var proto = s.prototype;
 
-			var proscope = {};
+			var prosup = {};
+
+			var proscope = {
+				$super : prosup
+			};
+
+			var member;
 			
 			for (var i in proto) {
 
-				var member = proto[i];
+				member = proto[i];
 				var isfnc  = (typeof member == "function");
 				
 				if (isfnc) {
@@ -35,13 +41,33 @@
 					} 
 				}
 
-				if (/^_|^\$/.test(i)) {
+				if (/^_/.test(i)) {
 					/// console.debug('Found protected member: ' + i);
 					// delete this[i]; not possible to delete proto-based member
 					if (i in this) { this[i] = null; }
 					proscope[i] = isfnc ? hitch(this, member) : member;
 				} else {
 					this[i] = member; 
+				}
+			}
+
+			var $super = s.__super__ ? s.__super__.prototype : null;
+
+			if ($super) {
+				for(var i in $super) {
+					var smember = $super[i];
+					var isfnc   = typeof (smember == "function");
+					if (i in proto && proto[i] == smember ) {
+						//' The same function, just do reassign'
+						prosup[i] = (i in proscope) ? proscope[i] : ( isfnc ? hitch(this, this[i]) : this[i]);
+					} else if (isfnc) {
+						// Overridden, do creation
+						with (proscope) {
+							smember= eval("smember = " + smember.toString());
+							// console.debug('Member now is',member);
+						} 
+						prosup[i] = hitch(this, smember);
+					}
 				}
 			}
 		}
@@ -74,16 +100,16 @@
         if (parent) {
             // building inheritance chain
             parentProto = parent.prototype;
+
             for (var i in parentProto) {
                 if (!(i in proto)) {
                     proto[i] = parentProto[i];
-                } else {
-                    proto["$" + i] = parentProto[i];
                 }
             }
         }
 
 		var constructor = getConstructor();
+		constructor.__super__ = parent;
         constructor.prototype = proto;
 		constructor.prototype.constructor = constructor;
 
