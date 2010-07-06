@@ -1,21 +1,24 @@
-var a = new Sub();
+var sub = new Sub();
 
-a.id = 'SUB';
+sub.id = 'SUB';
 
-a.getValue();
+// testing direct inheritance
+sub.getValue();
 
-a.setValue('HELLO');
+//testing protected call
+sub.setValue('HELLO');
 
-a.getValue();
+// checking inherited protected values
+sub.getValue();
 
 // testing super call
-a.getSuperValue();
+sub.getSuperValue();
 
 // testing override
-a.bla();
+sub.bla();
 
 try {
-    a._setValue();
+    sub._setValue();
 } catch(e) {
     debug('ERROR when calling _protected :' + e.message);
 }
