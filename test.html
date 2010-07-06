@@ -1,0 +1,105 @@
+<html>
+	<head>
+		<script src="prodec.js"></script>
+		<script>
+			BR = '----------------------------';
+			doDec = true;
+
+			function debug(str) {
+				var output = document.getElementById("output");
+				output.value += (str + "\n");
+			}
+
+			function decChanged() {
+				doDec = true;
+			}
+
+			function exec(str) {
+				window.eval(str);
+			}
+
+			function run() {
+				if (doDec) {
+					doDec = false;
+					var dec = document.getElementById("dec");
+					exec(dec.value);
+				}
+
+				var output = document.getElementById("output");
+				output.value = '';
+
+				var test = document.getElementById("test");
+				exec(test.value);		
+			}
+		</script>
+	</head>
+
+	<body>
+	<div style="float:left">
+		Declaration : <br/>
+		<textarea onchange="decChanged()" id="dec" cols="40" rows="30">Super = Declare({
+    _value    : 'initial',
+    _setValue : function() {
+        debug('Super._setValue');
+        _value = 'done';
+    },
+    setValue  : function(val) {
+        debug('Super.setValue');
+        if (val == 'test') {
+            _setValue( val );
+        }
+    },
+    getValue : function(){
+        debug('Super.getValue');
+        return _value;
+    }
+});
+
+Sub = Declare( Super, {
+    _setValue : function(){
+        debug('Sub._setValue');
+        _value = 'not-done';
+    },
+    getValue : function() {
+        debug('Sub.getValue');
+        return $getValue();    
+    }
+});</textarea>
+
+	</div>
+	<div style="float:left">
+	Test : <br/>
+	<textarea id="test" cols="40" rows="30"> var child = new Sub();
+
+// First public methods
+// result should be "setted"
+
+var old = child.getValue();
+debug('Old Value:' +  old);
+debug(BR);
+
+child.setValue('test');
+debug(BR);
+
+var newv = child.getValue();
+debug('New Value:' + newv );
+debug(BR);
+
+// Testing protected method from outside
+// Method should throw error
+try {
+    child._setValue( 'never' );
+} catch(e) {
+    debug("ERROR: " + e.message);
+} </textarea>
+	</div>
+	<div style="float:left">
+		Output : <br/>
+		<textarea id="output" cols="40" rows="30"></textarea>
+	</div>
+	<div style="clear:both">
+		This will run tests. check firebug
+		<button onclick="run()">Run</button>
+	</div>
+	</body>
+</html>
