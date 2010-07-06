@@ -8,6 +8,12 @@ a.setValue('HELLO');
 
 a.getValue();
 
+// testing super call
+a.getSuperValue();
+
+// testing override
+a.bla();
+
 try {
     a._setValue();
 } catch(e) {

@@ -23,6 +23,6 @@ Sub = Declare( Super, {
     },
     getValue : function() {
         debug('Sub.getValue');
-        return $getValue();    
+        return $super.getValue();    
     }
 });
