@@ -25,6 +25,15 @@
 				clearOutput();
 			}
 
+			function exec(str) {
+				window.eval(str);
+			}
+
+			function debug(str) {
+				var output = document.getElementById("output");
+				output.value += (str + "\n");
+			}
+
 			function load(nr) {
 
 				nr = nr || 1;
@@ -45,18 +54,11 @@
 
 			doDec = true;
 
-			function debug(str) {
-				var output = document.getElementById("output");
-				output.value += (str + "\n");
-			}
 
 			function decChanged() {
 				doDec = true;
 			}
 
-			function exec(str) {
-				window.eval(str);
-			}
 
 			function run() {
 				clearOutput();
@@ -71,10 +73,21 @@
 				var test = document.getElementById("test");
 				test && exec(test.value);		
 			}
+
+            $(function(){
+
+                load(2);
+
+                $("textarea").keypress(function(e) {
+                    if (e.keyCode === 9) {
+                        return false;
+                    }
+                });
+            });
 		</script>
 	</head>
 
-	<body onload="load(2)">
+	<body>
 		<div style="float:left">
 			Declaration : <br/>
 			<textarea onchange="decChanged()" id="dec" cols="40" rows="30">Loading...</textarea>
