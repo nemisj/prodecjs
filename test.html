@@ -39,12 +39,14 @@
 				nr = nr || 1;
 				jQuery.ajax({ 
 					url     : "test-dec-" + nr + ".js", 
+                    dataType : "text",
 					success : setDec,
 					error   : clean
 				});
 
 				jQuery.ajax({ 
 					url     : "test-test-" + nr +".js", 
+                    dataType : "text",
 					success : setTest,
 					error   : clean
 				});
@@ -69,7 +71,6 @@
 					dec && exec(dec.value);
 				}
 
-
 				var test = document.getElementById("test");
 				test && exec(test.value);		
 			}
@@ -88,26 +89,30 @@
 	</head>
 
 	<body>
-		<div style="float:left">
-			Declaration : <br/>
-			<textarea onchange="decChanged()" id="dec" cols="40" rows="30">Loading...</textarea>
-		</div>
+		<div style="width:100%">
+				<div style="float:left;width:32%;">
+					Declaration : <br/>
+					<textarea onchange="decChanged()" rows="30" id="dec" style="width:95%">
+						Loading...
+				    </textarea>
+				</div>
 
-		<div style="float:left">
-			Test : <br/>
-			<textarea id="test" cols="40" rows="30">Loading...</textarea>
-		</div>
+				<div style="float:left;width:32%;">
+					Test : <br/>
+					<textarea id="test" rows="30" style="width:95%">Loading...</textarea>
+				</div>
 
-		<div style="float:left">
-			Output : <br/>
-			<textarea id="output" cols="40" rows="30"></textarea>
-		</div>
+				<div style="float:left;width:32%;">
+					Output : <br/>
+					<textarea id="output" rows="30" style="width:95%"></textarea>
+				</div>
 
-		<div style="clear:both">
-			This will run test.
-			<button onclick="run()">Run</button>
-			<button onclick="load(1)">Declare based</button>
-			<button onclick="load(2)">Prototype based</button>
+				<div style="clear:both">
+					This will run test.
+					<button onclick="run()">Run</button>
+					<button onclick="load(1)">Declare based</button>
+					<button onclick="load(2)">Prototype based</button>
+				</div>
 		</div>
 	</body>
 </html>
